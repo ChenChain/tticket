@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.uber.org/zap"
 	"math/rand"
+	"sort"
 	"time"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
@@ -75,7 +76,11 @@ func (s *RandomStrategy) Predict(ctx context.Context) ([]int64, error) {
 	predictArr[4] = predictNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr5))
 	predictArr[5] = predictNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr6))
 	predictArr[6] = predictNumber(predictFactor(), model.BLUE_BALL_TYPE, arr7)
-
+	tmp := predictArr[:6]
+	sort.Slice(tmp, func(i, j int) bool {
+		return i < j
+	})
+	tmp = append(tmp, predictArr[6])
 	return predictArr, nil
 }
 

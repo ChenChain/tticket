@@ -2,11 +2,13 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
 	"time"
 	"tticket/pkg/dal"
 	"tticket/pkg/log"
+	"tticket/pkg/util"
 )
 
 var RED_BALL_NUMS = []int64{
@@ -22,8 +24,8 @@ var RED_BALL_TYPE = "red"
 var BLUE_BALL_TYPE = "blue"
 
 type Ball struct {
-	ID                 int64 `gorm:"primary_key" json:"id"`
-	LotteryDrawingTime string
+	ID                 int64
+	LotteryDrawingTime string // 开奖日期
 	Num1               int64
 	Num2               int64
 	Num3               int64
@@ -33,6 +35,26 @@ type Ball struct {
 	Num7               int64
 	CreatedTime        time.Time
 	UpdatedTime        time.Time
+}
+
+func (ball *Ball) GetBallNumsString() string {
+	return fmt.Sprintf("%d %d %d %d %d %d %d",
+		ball.Num1, ball.Num2, ball.Num3, ball.Num4, ball.Num5, ball.Num6, ball.Num7,
+	)
+}
+
+func (ball *Ball) GetBallNumsArray() []int64 {
+	return []int64{
+		ball.Num1, ball.Num2, ball.Num3, ball.Num4, ball.Num5, ball.Num6, ball.Num7,
+	}
+}
+
+func (ball *Ball) IsWinning(otherBall *Ball) bool {
+	if ball.Num7 == otherBall.Num7 {
+		return true
+	}
+	intersect := util.ArrayIntersect(ball.GetBallNumsArray()[:6], otherBall.GetBallNumsArray()[:6])
+	return len(intersect) >= 4
 }
 
 func InsertBalls(ctx context.Context, balls []*Ball) error {
