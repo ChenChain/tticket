@@ -12,6 +12,7 @@ type User struct {
 	Mail        string
 	CreatedTime time.Time
 	UpdatedTime time.Time
+	DeletedTime time.Time
 }
 
 func FindUsers(ctx context.Context) ([]*User, error) {

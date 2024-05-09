@@ -2,16 +2,14 @@ package model
 
 import (
 	"context"
-	"time"
 	"tticket/pkg/dal"
 )
 
 type PredictBall struct {
 	Ball
 	PredictLotteryDrawingTime string
-	CreatedTime               time.Time
-	UpdatedTime               time.Time
-	Strategy                  string
+
+	Strategy string
 }
 
 func FindPredictBalls(ctx context.Context, pageSize, pageNum int64) ([]*PredictBall, error) {

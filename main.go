@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"tticket/pkg/mail"
+	"tticket/timer"
 )
 
 func main() {
-	mail.Init(context.Background())
+	ctx := context.TODO()
+	mail.Init(ctx)
+	timer.Init(ctx)
 }

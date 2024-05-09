@@ -19,7 +19,7 @@ func CacheUserMail(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	mails := []string{}
+	mails := make([]string, 0)
 	for _, u := range users {
 		mails = append(mails, u.Mail)
 	}

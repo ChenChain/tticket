@@ -35,6 +35,7 @@ type Ball struct {
 	Num7               int64
 	CreatedTime        time.Time
 	UpdatedTime        time.Time
+	DeletedTime        time.Time
 }
 
 func (ball *Ball) GetBallNumsString() string {
