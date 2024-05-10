@@ -14,7 +14,12 @@ import (
 type TMail struct {
 }
 
-func (t *TMail) Send(ctx context.Context) error {
+func CronSend(ctx context.Context) error {
+	// 理应用cron定时任务，这里判断下时间吧
+	// 每天中午
+}
+
+func Send(ctx context.Context) error {
 	predicts, err := model.FindPredictBalls(ctx, 4, 1)
 	if err != nil {
 		log.Error(ctx, "find predict balls err", zap.Error(err))
@@ -28,14 +33,14 @@ func (t *TMail) Send(ctx context.Context) error {
 	mailStr := contentTemplate(predicts[0], balls, predicts[1:])
 	users := tuser.GetUserMails(ctx)
 	for _, u := range users {
-		email := &email.Email{
+		mailContent := &email.Email{
 			From:    "1793854955@qq.com",
 			To:      []string{u},
 			Subject: "TTicket 预测邮件",
 			HTML:    []byte(mailStr),
 			Sender:  "TTicket System",
 		}
-		mail.Send(email)
+		mail.Send(mailContent)
 	}
 	return nil
 }
