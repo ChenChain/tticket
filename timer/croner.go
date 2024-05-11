@@ -29,46 +29,42 @@ func (c *Croner) Name() string {
 	return fmt.Sprintf("looper:%d", os.Getpid())
 }
 
-func (c *Croner) Execute(ctx context.Context, tasks []*model.Task) error {
-	for _, task := range tasks {
-		e := &Expr{}
-		if err := e.parse(task.Cron); err != nil {
-			log.Error(ctx, "failed to parse cron", zap.Any("task", task), zap.Error(err))
-			continue
-		}
-		if !e.IsArrival() {
-			continue
-		}
-		// 更新task
-		result := dal.DB.Model(&model.Task{}).Where(&model.Task{
-			Name:        task.Name,
-			ExecuteTime: task.ExecuteTime, // 乐观锁
-		}).Updates(
-			&model.Task{
-				Name:        task.Name,
-				Executor:    c.Name(),
-				ExecuteTime: time.Time{},
-			},
-		)
-
-		if result.RowsAffected == 0 && result.Error == nil {
-			continue
-		}
-		if result.Error != nil {
-			log.Error(ctx, "failed to update task", zap.Any("task", task))
-			return result.Error
-		}
-
-		go func() {
-			log.Info(ctx, "start to execute task", zap.Any("task", task))
-			err := taskMap[task.Name](ctx)
-			if err != nil {
-				log.Error(ctx, "failed to execute task", zap.String("task", task.Name))
-				// need metrics
-			}
-		}()
-
+func (c *Croner) Execute(ctx context.Context, task *model.Task) error {
+	e := &Expr{}
+	if err := e.parse(task.Cron); err != nil {
+		log.Error(ctx, "failed to parse cron", zap.Any("task", task), zap.Error(err))
+		return err
 	}
+	if !e.IsArrival() {
+		return nil
+	}
+	// 更新task
+	result := dal.DB.Model(&model.Task{}).Where(&model.Task{
+		Name:        task.Name,
+		ExecuteTime: task.ExecuteTime, // 乐观锁
+	}).Updates(
+		&model.Task{
+			Name:        task.Name,
+			Executor:    c.Name(),
+			ExecuteTime: time.Time{},
+		},
+	)
+
+	if result.RowsAffected == 0 && result.Error == nil {
+		return nil
+	}
+	if result.Error != nil {
+		log.Error(ctx, "failed to update task", zap.Any("task", task))
+		return result.Error
+	}
+
+	log.Info(ctx, "start to execute task", zap.Any("task", task))
+	err := taskMap[task.Name](ctx)
+	if err != nil {
+		log.Error(ctx, "failed to execute task", zap.String("task", task.Name))
+		// need metrics
+	}
+
 	return nil
 }
 

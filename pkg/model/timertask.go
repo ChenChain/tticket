@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"time"
 	"tticket/pkg/dal"
 )
@@ -17,6 +18,7 @@ const CRON_TASK_TYPE = 3  // cron定时任务
 
 type Task struct {
 	ID             int64
+	EventID        string // log追踪
 	Name           string
 	IntervalSecond int64
 	Type           TaskType
@@ -31,9 +33,15 @@ type Task struct {
 }
 
 func FindTask(ctx context.Context, ty TaskType) ([]*Task, error) {
-	// 目前只处理loop task
 	res := make([]*Task, 0)
 	if err := dal.DB.Model(&Task{Type: ty}).Find(res).Error; err != nil {
 		return nil, err
+	}
+	return res, nil
+}
+
+func FillEventID(tasks []*Task) {
+	for _, t := range tasks {
+		t.EventID = uuid.New().String()
 	}
 }

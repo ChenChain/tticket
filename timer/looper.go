@@ -20,39 +20,36 @@ func (l *Looper) Name() string {
 	return fmt.Sprintf("looper:%d", os.Getpid())
 }
 
-func (l *Looper) Execute(ctx context.Context, tasks []*model.Task) error {
-	for _, task := range tasks {
-		if int64(time.Since(task.ExecuteTime).Seconds()) < task.IntervalSecond {
-			continue
-		}
-
-		// 更新task
-		result := dal.DB.Model(&model.Task{}).Where(&model.Task{
-			Name:        task.Name,
-			ExecuteTime: task.ExecuteTime, // 乐观锁
-		}).Updates(
-			&model.Task{
-				Name:        task.Name,
-				Executor:    l.Name(),
-				ExecuteTime: time.Time{},
-			},
-		)
-
-		if result.RowsAffected == 0 && result.Error == nil {
-			continue
-		}
-		if result.Error != nil {
-			log.Error(ctx, "failed to update task", zap.Any("task", task))
-			return result.Error
-		}
-		go func() {
-			log.Info(ctx, "start to execute task", zap.Any("task", task))
-			err := taskMap[task.Name](ctx)
-			if err != nil {
-				log.Error(ctx, "failed to execute task", zap.String("task_name", task.Name))
-				// need metrics
-			}
-		}()
+func (l *Looper) Execute(ctx context.Context, task *model.Task) error {
+	if int64(time.Since(task.ExecuteTime).Seconds()) < task.IntervalSecond {
+		return nil
 	}
+
+	// 更新task
+	result := dal.DB.Model(&model.Task{}).Where(&model.Task{
+		Name:        task.Name,
+		ExecuteTime: task.ExecuteTime, // 乐观锁
+	}).Updates(
+		&model.Task{
+			Name:        task.Name,
+			Executor:    l.Name(),
+			ExecuteTime: time.Time{},
+		},
+	)
+
+	if result.RowsAffected == 0 && result.Error == nil {
+		return nil
+	}
+	if result.Error != nil {
+		log.Error(ctx, "failed to update task", zap.Any("task", task))
+		return result.Error
+	}
+	log.Info(ctx, "start to execute task", zap.Any("task", task))
+	err := taskMap[task.Name](ctx)
+	if err != nil {
+		log.Error(ctx, "failed to execute task", zap.String("task_name", task.Name))
+		// need metrics
+	}
+
 	return nil
 }

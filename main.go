@@ -1,14 +1,15 @@
 package main
 
 import (
-	"context"
+	"tticket/pkg/dal"
 	"tticket/pkg/mail"
+	"tticket/pkg/util"
 	"tticket/timer"
 )
 
 func main() {
-	ctx := context.TODO()
-	mail.Init(ctx)
-	timer.Init(ctx)
+	dal.Init()
+	mail.Init(util.Context())
+	timer.Init(util.Context())
 
 }

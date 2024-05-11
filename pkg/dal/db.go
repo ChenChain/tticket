@@ -1,20 +1,22 @@
 package dal
 
 import (
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"tticket/pkg/conf"
 )
 
 var DB *gorm.DB
+var err error
 
-func init() {
-	db, err := gorm.Open(mysql.New(mysql.Config{
-		DriverName: "my_mysql_driver",
-		DSN:        "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local", // data source name, 详情参考：https://github.com/go-sql-driver/mysql#dsn-data-source-name
-	}), &gorm.Config{})
-	_ = db
-	_ = err
-
+func Init() {
+	dsn := "%s:%s@tcp(%s:%s)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn = fmt.Sprintf(dsn, conf.Config.Mysql.UsrName, conf.Config.Mysql.Password, conf.Config.Host, conf.Config.Mysql.Port)
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func Insert(any interface{}) error {

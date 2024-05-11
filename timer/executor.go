@@ -10,11 +10,12 @@ import (
 	"tticket/logic/tuser"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
+	"tticket/pkg/util"
 )
 
 type Executor interface {
 	Name() string
-	Execute(context.Context, []*model.Task) error
+	Execute(context.Context, *model.Task) error
 }
 
 var executorMap map[model.TaskType]Executor
@@ -60,6 +61,7 @@ func execute(ctx context.Context) {
 		log.Error(ctx, "failed to find loop task", zap.Error(err))
 		return
 	}
+	model.FillEventID(tasks)
 
 	taskArrMap := make(map[model.TaskType][]*model.Task)
 	for _, t := range tasks {
@@ -79,11 +81,15 @@ func execute(ctx context.Context) {
 			continue
 		}
 		log.Info(ctx, "ready to execute task", zap.Any("task", v))
-		err := executor.Execute(ctx, v)
-		if err != nil {
-			log.Error(ctx, "execute task err", zap.Any("task", v))
-			// should metrics
-			continue
+		for _, task := range v {
+			go func() {
+				tmpCtx := context.WithValue(ctx, util.TASK_EVENT_ID, task.EventID)
+				err := executor.Execute(tmpCtx, task)
+				if err != nil {
+					log.Error(ctx, "execute task err", zap.Any("task", v))
+					// should metrics
+				}
+			}()
 		}
 	}
 }
