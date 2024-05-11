@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"gorm.io/gorm/clause"
 	"tticket/pkg/dal"
 )
 
@@ -10,6 +11,24 @@ type PredictBall struct {
 	PredictLotteryDrawingTime string
 
 	Strategy string
+}
+
+func CreatePredictBall(ctx context.Context, m *PredictBall) error {
+	err := dal.DB.Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "predict_lottery_drawing_time"}}, // key colum
+		DoUpdates: clause.AssignmentColumns([]string{
+			"num1",
+			"num2",
+			"num3",
+			"num4",
+			"num5",
+			"num6",
+			"num7"}), // column needed to be updated
+	}).Create(&m).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func FindPredictBalls(ctx context.Context, pageSize, pageNum int64) ([]*PredictBall, error) {
