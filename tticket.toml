@@ -1,0 +1,12 @@
+[mysql]
+ host = ""
+ port = ""
+ username = ""
+ password = ""
+
+[mail]
+ address = ""
+ port = ""
+ username = ""
+ password = ""
+ host = ""

@@ -14,11 +14,6 @@ import (
 type TMail struct {
 }
 
-func CronSend(ctx context.Context) error {
-	// 理应用cron定时任务，这里判断下时间吧
-	// 每天中午
-}
-
 func Send(ctx context.Context) error {
 	predicts, err := model.FindPredictBalls(ctx, 4, 1)
 	if err != nil {

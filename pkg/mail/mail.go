@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 	"net/smtp"
 	"time"
+	"tticket/pkg/conf"
 	"tticket/pkg/log"
 )
 
@@ -16,9 +17,12 @@ var ch chan *email.Email
 
 func Init(ctx context.Context) {
 	pool, err = email.NewPool(
-		"smtp.126.com:25",
+		fmt.Sprintf(conf.Config.Mail.Address, conf.Config.Mail.Port),
 		4,
-		smtp.PlainAuth("", "leedarjun@126.com", "358942617ldj", "smtp.126.com"),
+		smtp.PlainAuth("",
+			conf.Config.Mail.UserName,
+			conf.Config.Mail.Password,
+			conf.Config.Mail.Host),
 	)
 	if err != nil {
 		panic(fmt.Sprintf("init mail err:%v", err))
