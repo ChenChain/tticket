@@ -2,7 +2,7 @@ package conf
 
 import "github.com/spf13/viper"
 
-var Config *Global
+var Config = &Global{}
 
 type Global struct {
 	Mail
@@ -25,8 +25,9 @@ type Spider struct {
 
 type Mysql struct {
 	Host     string
+	Host1    string
 	Port     string
-	UsrName  string
+	UserName string
 	Password string
 }
 

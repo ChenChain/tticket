@@ -18,8 +18,8 @@ type Executor interface {
 	Execute(context.Context, *model.Task) error
 }
 
-var executorMap map[model.TaskType]Executor
-var taskMap map[string]func(ctx context.Context) error
+var executorMap = map[model.TaskType]Executor{}
+var taskMap = map[string]func(ctx context.Context) error{}
 
 func Init(ctx context.Context) {
 	RegisterExecutor(model.DEFER_TASK_TYPE, &Defer{})

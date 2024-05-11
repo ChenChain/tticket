@@ -1,0 +1,64 @@
+create database tticket;
+
+CREATE TABLE `user` (
+                        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                        `name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                        `mail` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                        `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                        `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        `deleted_time` timestamp NULL DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `ball` (
+                        `id` int unsigned NOT NULL AUTO_INCREMENT,
+                        `lottery_drawing_time` varchar(255) DEFAULT NULL,
+                        `num1` int DEFAULT NULL,
+                        `num2` int DEFAULT NULL,
+                        `num3` int DEFAULT NULL,
+                        `num4` int DEFAULT NULL,
+                        `num5` int DEFAULT NULL,
+                        `num6` int DEFAULT NULL,
+                        `num7` int DEFAULT NULL,
+                        `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                        `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        `deleted_time` timestamp NULL DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `predict_ball` (
+                                `id` int unsigned NOT NULL AUTO_INCREMENT,
+                                `lottery_drawing_time` varchar(255) DEFAULT NULL,
+                                `num1` int DEFAULT NULL,
+                                `num2` int DEFAULT NULL,
+                                `num3` int DEFAULT NULL,
+                                `num4` int DEFAULT NULL,
+                                `num5` int DEFAULT NULL,
+                                `num6` int DEFAULT NULL,
+                                `num7` int DEFAULT NULL,
+                                `predict_lottery_drawing_time` varchar(255) DEFAULT NULL,
+                                `strategy` varchar(255) DEFAULT NULL,
+                                `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                                `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                `deleted_time` timestamp NULL DEFAULT NULL,
+                                PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+CREATE TABLE `task` (
+                        `id` int unsigned NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) DEFAULT NULL,
+                        `interval_second` int DEFAULT NULL,
+                        `type` int DEFAULT NULL,
+                        `executor` varchar(255) DEFAULT NULL,
+                        `execute_time` timestamp NULL DEFAULT NULL,
+                        `cron` varchar(255) DEFAULT NULL,
+                        `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                        `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        `deleted_time` timestamp NULL DEFAULT NULL,
+                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
