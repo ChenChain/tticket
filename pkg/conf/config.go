@@ -24,11 +24,12 @@ type Spider struct {
 }
 
 type Mysql struct {
-	Host     string
-	Host1    string
-	Port     string
-	UserName string
-	Password string
+	Host        string
+	Host1       string
+	Port        string
+	UserName    string
+	Password    string
+	LogLocation string
 }
 
 type Strategy struct {

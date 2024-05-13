@@ -27,7 +27,8 @@ func CreatePredictBall(ctx context.Context, m *PredictBall) error {
 			"num4",
 			"num5",
 			"num6",
-			"num7"}), // column needed to be updated
+			"num7",
+			"strategy"}), // column needed to be updated
 	}).Create(&m).Error
 	if err != nil {
 		return err

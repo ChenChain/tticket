@@ -3,6 +3,7 @@
  port = ""
  username = ""
  password = ""
+ log_location = ""
 
 [mail]
  address = ""

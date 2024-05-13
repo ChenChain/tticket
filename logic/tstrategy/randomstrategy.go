@@ -20,7 +20,7 @@ func NewRandomStrategy() *RandomStrategy {
 }
 
 func (r RandomStrategy) Name() string {
-	panic("random strategy")
+	return "random strategy"
 }
 
 func (r RandomStrategy) Predict(ctx context.Context) ([]int64, error) {

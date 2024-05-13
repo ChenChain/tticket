@@ -62,5 +62,3 @@ func getExtraField(ctx context.Context) []zap.Field {
 	}
 	return res
 }
-
-// todo db log
