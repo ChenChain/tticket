@@ -1,8 +1,8 @@
 [mysql]
  host = ""
  port = ""
- username = "root"
- password = "Aa123456"
+ username = ""
+ password = ""
 
 [mail]
  address = ""

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.uber.org/zap"
+	"math/rand"
 	"sort"
 	"time"
 	"tticket/pkg/log"
@@ -14,8 +15,6 @@ type Strategy interface {
 	Name() string
 	Predict(ctx context.Context) ([]int64, error) // 预测计算方法
 	weight() int64                                // 权重 0～100
-	getBallData(ctx context.Context) ([]*model.Ball, error)
-	ballDataNum() int64 // 需要分析的数据数量
 }
 
 var strategies = map[string]Strategy{}
@@ -28,17 +27,32 @@ func Register(strategy Strategy) {
 }
 
 func Init() {
+	Register(NewRandomCorrelationStrategy())
 	Register(NewRandomStrategy())
+	Register(NewRandomPositiveStrategy())
+	Register(NewRandomNegativeStrategy())
 }
 
 func Select() Strategy {
 	total := int64(0)
+	arr := make([]int64, len(strategies))
+	strategyArr := make([]Strategy, len(strategies))
+	i := 0
 	for _, strategy := range strategies {
 		total += strategy.weight()
-		return strategy // temp
+		arr[i] = total
+		strategyArr[i] = strategy
+		i++
 	}
-	// todo 权重随机选择
-	return nil
+	score := rand.Int63n(total)
+	index := 0
+	for i, v := range arr {
+		if score < v {
+			index = i
+			break
+		}
+	}
+	return strategyArr[index]
 }
 
 func PredictBall(ctx context.Context) error {

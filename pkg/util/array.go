@@ -9,7 +9,7 @@ type ValueType interface {
 	int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64 | uintptr | float32 | float64 | string
 }
 
-// ArrayDifferentSet 数组求差集
+// ArrayDifferentSet 数组求差集 res = arr1 - arr2
 func ArrayDifferentSet[T ValueType](arr1, arr2 []T) []T {
 	res := make([]T, 0)
 	arrMap := make(map[T]bool)
@@ -47,6 +47,9 @@ func ArrayAdd[T ValueType](arr1, arr2 []T) []T {
 }
 
 func RandomChooseOne[T ValueType](arr []T) T {
+	if len(arr) == 0 {
+		return *new(T)
+	}
 	length := len(arr)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	res := r.Intn(length)
