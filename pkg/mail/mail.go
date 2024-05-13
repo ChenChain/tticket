@@ -17,7 +17,7 @@ var ch chan *email.Email
 
 func Init(ctx context.Context) {
 	pool, err = email.NewPool(
-		fmt.Sprintf(conf.Config.Mail.Address+":%s", conf.Config.Mail.Port),
+		fmt.Sprintf(conf.Config.Mail.Address+":%s", "25"),
 		4,
 		smtp.PlainAuth("",
 			conf.Config.Mail.UserName,

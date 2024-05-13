@@ -9,7 +9,7 @@ import (
 	"tticket/timer"
 )
 
-func main() {
+func main2() {
 	conf.Init()
 	dal.Init()
 

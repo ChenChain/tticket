@@ -13,6 +13,10 @@ type PredictBall struct {
 	Strategy string
 }
 
+func (b *PredictBall) TableName() string {
+	return "predict_ball"
+}
+
 func CreatePredictBall(ctx context.Context, m *PredictBall) error {
 	err := dal.DB.Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "predict_lottery_drawing_time"}}, // key colum
@@ -51,10 +55,9 @@ func FindPredictBallByDrawingTime(times []string) ([]*PredictBall, error) {
 func GenerateErrorPredictBall() *PredictBall {
 	return &PredictBall{
 		Ball: Ball{
-			LotteryDrawingTime: "error",
-			Num1:               -1,
+			Num1: -1,
 		},
-		PredictLotteryDrawingTime: "error",
+		PredictLotteryDrawingTime: "1900-01-01",
 		Strategy:                  "error",
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"go.uber.org/zap"
 	"math/rand"
-	"sort"
 	"time"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
@@ -58,7 +57,7 @@ func (s *RandomStrategy) Predict(ctx context.Context) ([]int64, error) {
 	arr6 := make([]int64, 0)
 	arr7 := make([]int64, 0)
 
-	predictArr := make([]int64, 0)
+	predictArr := make([]int64, 7)
 	for _, ball := range balls {
 		arr1 = append(arr1, ball.Num1)
 		arr2 = append(arr2, ball.Num2)
@@ -76,17 +75,12 @@ func (s *RandomStrategy) Predict(ctx context.Context) ([]int64, error) {
 	predictArr[4] = predictNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr5))
 	predictArr[5] = predictNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr6))
 	predictArr[6] = predictNumber(predictFactor(), model.BLUE_BALL_TYPE, arr7)
-	tmp := predictArr[:6]
-	sort.Slice(tmp, func(i, j int) bool {
-		return i < j
-	})
-	tmp = append(tmp, predictArr[6])
 	return predictArr, nil
 }
 
 func (s *RandomStrategy) ballDataNum() int64 {
 	// Todo: config in yaml
-	return 100
+	return 1000
 }
 
 func (s *RandomStrategy) getBallData(ctx context.Context) ([]*model.Ball, error) {

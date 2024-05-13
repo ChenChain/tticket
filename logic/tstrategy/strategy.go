@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go.uber.org/zap"
+	"sort"
 	"time"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
@@ -47,6 +48,12 @@ func PredictBall(ctx context.Context) error {
 		log.Error(ctx, "failed to predict", zap.String("strategy", strategy.Name()), zap.Error(err))
 		return err
 	}
+	tmp := arr[:6]
+	sort.Slice(tmp, func(i, j int) bool {
+		return tmp[i] < tmp[j]
+	})
+	arr = append(tmp, arr[6])
+
 	ball := &model.PredictBall{
 		Ball: model.Ball{
 			Num1: arr[0],

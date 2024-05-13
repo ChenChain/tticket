@@ -10,9 +10,13 @@ type User struct {
 	ID          int64
 	Name        string
 	Mail        string
-	CreatedTime time.Time
-	UpdatedTime time.Time
-	DeletedTime time.Time
+	CreatedTime time.Time `gorm:"-"`
+	UpdatedTime time.Time `gorm:"-"`
+	DeletedTime time.Time `gorm:"-"`
+}
+
+func (b *User) TableName() string {
+	return "user"
 }
 
 func FindUsers(ctx context.Context) ([]*User, error) {

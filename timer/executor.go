@@ -7,6 +7,7 @@ import (
 	"time"
 	"tticket/logic/tmail"
 	"tticket/logic/tspider"
+	"tticket/logic/tstrategy"
 	"tticket/logic/tuser"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
@@ -27,6 +28,7 @@ func Init(ctx context.Context) {
 	RegisterExecutor(model.CRON_TASK_TYPE, &Croner{})
 
 	RegisterTask("cache_user", tuser.CacheUserMail)
+	RegisterTask("predict_ball", tstrategy.PredictBall)
 	RegisterTask("spider_lottery", tspider.Logic)
 	RegisterTask("send_mail", tmail.Send)
 

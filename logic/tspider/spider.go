@@ -16,10 +16,10 @@ import (
 var url = "https://jc.zhcw.com/port/client_json.php?transactionType=10001001&lotteryId=1&issueCount=50&startIssue=&endIssue=&startDate=&endDate=&type=0&pageNum=1&pageSize=30"
 
 type LotteryBody struct {
-	PageNum  int
-	PageSize int
-	Total    int
-	Pages    int
+	PageNum  int `json:"string"`
+	PageSize int `json:"string"`
+	Total    int `json:"string"`
+	Pages    int `json:"string"`
 	Data     []*LotteryData
 	Message  string
 }
@@ -31,7 +31,7 @@ type LotteryData struct {
 	FrontWinningNums []string
 	BackWinningNum   string
 	RedColorNums     []int64
-	BlueColorNums    int64
+	BlueColorNum     int64
 }
 
 func (m *LotteryData) parse() error {
@@ -44,12 +44,13 @@ func (m *LotteryData) parse() error {
 	for i := 0; i < 6; i++ {
 		m.RedColorNums[i], _ = strconv.ParseInt(res[i], 10, 64)
 	}
-	m.BlueColorNums, _ = strconv.ParseInt(m.BackWinningNum, 10, 64)
+	m.BlueColorNum, _ = strconv.ParseInt(m.BackWinningNum, 10, 64)
 	return nil
 }
 
 func getLotteryData(ctx context.Context) (string, error) {
-	resp, err := thttp.GetClient().Do(ctx, thttp.GET_METHOD, url)
+	resp, err := thttp.GetClient().Do(ctx, thttp.GET_METHOD, url, map[string]string{"Referer": "https://www.zhcw.com/"})
+	log.Info(ctx, "lottery data", zap.String("data", resp))
 	if err != nil {
 		return "", err
 	}
@@ -75,7 +76,7 @@ func parseLottery(ctx context.Context, lotteryContent string) ([]*model.Ball, er
 			Num4:               v.RedColorNums[3],
 			Num5:               v.RedColorNums[4],
 			Num6:               v.RedColorNums[5],
-			Num7:               v.RedColorNums[6],
+			Num7:               v.BlueColorNum,
 		}
 		res = append(res, ball)
 	}

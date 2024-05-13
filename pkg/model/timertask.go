@@ -32,9 +32,13 @@ type Task struct {
 	DeletedTime time.Time
 }
 
+func (b *Task) TableName() string {
+	return "task"
+}
+
 func FindTask(ctx context.Context, ty TaskType) ([]*Task, error) {
 	res := make([]*Task, 0)
-	if err := dal.DB.Model(&Task{Type: ty}).Find(res).Error; err != nil {
+	if err := dal.DB.Model(&Task{Type: ty}).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil

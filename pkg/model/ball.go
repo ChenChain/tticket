@@ -33,28 +33,32 @@ type Ball struct {
 	Num5               int64
 	Num6               int64
 	Num7               int64
-	CreatedTime        time.Time
-	UpdatedTime        time.Time
-	DeletedTime        time.Time
+	CreatedTime        time.Time `gorm:"-"`
+	UpdatedTime        time.Time `gorm:"-"`
+	DeletedTime        time.Time `gorm:"-"`
 }
 
-func (ball *Ball) GetBallNumsString() string {
+func (b *Ball) TableName() string {
+	return "ball"
+}
+
+func (b *Ball) GetBallNumsString() string {
 	return fmt.Sprintf("%d %d %d %d %d %d %d",
-		ball.Num1, ball.Num2, ball.Num3, ball.Num4, ball.Num5, ball.Num6, ball.Num7,
+		b.Num1, b.Num2, b.Num3, b.Num4, b.Num5, b.Num6, b.Num7,
 	)
 }
 
-func (ball *Ball) GetBallNumsArray() []int64 {
+func (b *Ball) GetBallNumsArray() []int64 {
 	return []int64{
-		ball.Num1, ball.Num2, ball.Num3, ball.Num4, ball.Num5, ball.Num6, ball.Num7,
+		b.Num1, b.Num2, b.Num3, b.Num4, b.Num5, b.Num6, b.Num7,
 	}
 }
 
-func (ball *Ball) IsWinning(otherBall *Ball) bool {
-	if ball.Num7 == otherBall.Num7 {
+func (b *Ball) IsWinning(otherBall *Ball) bool {
+	if b.Num7 == otherBall.Num7 {
 		return true
 	}
-	intersect := util.ArrayIntersect(ball.GetBallNumsArray()[:6], otherBall.GetBallNumsArray()[:6])
+	intersect := util.ArrayIntersect(b.GetBallNumsArray()[:6], otherBall.GetBallNumsArray()[:6])
 	return len(intersect) >= 4
 }
 

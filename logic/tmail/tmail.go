@@ -91,9 +91,9 @@ func contentTemplate(predict *model.PredictBall, balls []*model.Ball, historyPre
 </table>
 `
 	historyStr = fmt.Sprintf(historyStr,
-		balls[0].LotteryDrawingTime, balls[0].GetBallNumsString(), predictBallMap[balls[0].LotteryDrawingTime],
-		balls[1].LotteryDrawingTime, balls[1].GetBallNumsString(), predictBallMap[balls[1].LotteryDrawingTime],
-		balls[2].LotteryDrawingTime, balls[2].GetBallNumsString(), predictBallMap[balls[2].LotteryDrawingTime],
+		balls[0].LotteryDrawingTime, balls[0].GetBallNumsString(), predictBallMap[balls[0].LotteryDrawingTime].GetBallNumsString(),
+		balls[1].LotteryDrawingTime, balls[1].GetBallNumsString(), predictBallMap[balls[1].LotteryDrawingTime].GetBallNumsString(),
+		balls[2].LotteryDrawingTime, balls[2].GetBallNumsString(), predictBallMap[balls[2].LotteryDrawingTime].GetBallNumsString(),
 	)
 	return predictStr + historyStr
 }

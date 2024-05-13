@@ -2,7 +2,6 @@ package log
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"tticket/pkg/util"
 
@@ -15,13 +14,17 @@ var logger *zap.Logger
 func init() {
 	// init cfg
 
-	file, err := os.Create("./tticket.log")
+	file, err := os.OpenFile("./tticket.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
-		panic(fmt.Sprintf("log file err: %v", err))
+		panic(err)
 	}
+
+	cfg := zap.NewProductionEncoderConfig()
+	cfg.EncodeTime = zapcore.ISO8601TimeEncoder
+	cfg.EncodeLevel = zapcore.CapitalLevelEncoder
 	writer := zapcore.AddSync(file)
 	core := zapcore.NewCore(
-		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+		zapcore.NewJSONEncoder(cfg),
 		writer,
 		zapcore.DebugLevel,
 	)
@@ -59,3 +62,5 @@ func getExtraField(ctx context.Context) []zap.Field {
 	}
 	return res
 }
+
+// todo db log
