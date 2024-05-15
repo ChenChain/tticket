@@ -35,7 +35,7 @@ func (c *Croner) Execute(ctx context.Context, task *model.Task) error {
 		log.Error(ctx, "failed to parse cron", zap.Any("task", task), zap.Error(err))
 		return err
 	}
-	if !e.IsArrival() {
+	if !e.IsArrival(task.ExecuteTime) {
 		return nil
 	}
 	// 更新task
@@ -108,7 +108,7 @@ func (e *Expr) parse(expr string) error {
 	e.Weekday = weekdayArr
 	return nil
 }
-func (e *Expr) IsArrival() bool {
+func (e *Expr) IsArrival(executeTime time.Time) bool {
 	now := time.Now()
 	w := now.Weekday()
 	if w == 0 {
@@ -119,5 +119,11 @@ func (e *Expr) IsArrival() bool {
 	}
 
 	tmp := time.Date(now.Year(), now.Month(), now.Day(), int(e.Hour), int(e.Minute), 0, 0, now.Location())
-	return !tmp.After(now)
+	if tmp.After(now) {
+		return false
+	}
+
+	// should run once in cron duration
+	delta := now.Sub(executeTime)
+	return delta > 15*time.Hour
 }
