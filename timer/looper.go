@@ -2,6 +2,7 @@ package timer
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go.uber.org/zap"
 	"os"
@@ -33,10 +34,11 @@ func (l *Looper) Execute(ctx context.Context, task *model.Task) error {
 		&model.Task{
 			Name:        task.Name,
 			Executor:    l.Name(),
-			ExecuteTime: time.Time{},
+			ExecuteTime: time.Now(),
 		},
 	)
 
+	// 没更新到
 	if result.RowsAffected == 0 && result.Error == nil {
 		return nil
 	}
@@ -45,11 +47,17 @@ func (l *Looper) Execute(ctx context.Context, task *model.Task) error {
 		return result.Error
 	}
 	log.Info(ctx, "start to execute task", zap.Any("task", task))
-	err := taskMap[task.Name](ctx)
-	if err != nil {
-		log.Error(ctx, "failed to execute task", zap.String("task_name", task.Name))
+	f := taskMap[task.Name]
+	if f == nil {
+		log.Error(ctx, "execute task func is nil", zap.String("task", task.Name))
 		// need metrics
+		return errors.New("func is nil")
 	}
-
+	err := f(ctx)
+	if err != nil {
+		log.Error(ctx, "execute task err", zap.String("task", task.Name), zap.Error(err))
+		// need metrics
+		return err
+	}
 	return nil
 }
