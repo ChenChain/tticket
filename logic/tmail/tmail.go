@@ -28,6 +28,7 @@ func Send(ctx context.Context) error {
 	mailStr := contentTemplate(predicts[0], balls, predicts[1:])
 	users := tuser.GetUserMails(ctx)
 	for _, u := range users {
+		// todo config in toml
 		mailContent := &email.Email{
 			From:    "1793854955@qq.com",
 			To:      []string{u},

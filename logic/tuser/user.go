@@ -26,5 +26,3 @@ func CacheUserMail(ctx context.Context) error {
 	localcache.Cache().Set(CACHE_USER_KEY, mails, 20*time.Minute)
 	return nil
 }
-
-// TODO 每15分钟刷新users
