@@ -82,7 +82,6 @@ func execute(ctx context.Context) {
 			log.Error(ctx, "the executor is nil", zap.Any("task_type", k))
 			continue
 		}
-		log.Info(ctx, "ready to execute task", zap.Any("task", v))
 		for _, task := range v {
 			go func() {
 				tmpCtx := context.WithValue(ctx, util.TASK_EVENT_ID, task.EventID)
