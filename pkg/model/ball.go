@@ -83,7 +83,7 @@ func InsertBalls(ctx context.Context, balls []*Ball) error {
 
 func FindBalls(ctx context.Context, pageSize, pageNum int64) ([]*Ball, error) {
 	res := make([]*Ball, 0)
-	err := dal.DB.Model(&Ball{}).Offset(int(pageSize * (pageNum - 1))).Limit(int(pageSize)).Find(&res).Error
+	err := dal.DB.Model(&Ball{}).Order("id desc").Offset(int(pageSize * (pageNum - 1))).Limit(int(pageSize)).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}

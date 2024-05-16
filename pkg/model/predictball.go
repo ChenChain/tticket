@@ -38,7 +38,7 @@ func CreatePredictBall(ctx context.Context, m *PredictBall) error {
 
 func FindPredictBalls(ctx context.Context, pageSize, pageNum int64) ([]*PredictBall, error) {
 	res := make([]*PredictBall, 0)
-	err := dal.DB.Model(&PredictBall{}).Offset(int(pageSize * (pageNum - 1))).Limit(int(pageSize)).Find(&res).Error
+	err := dal.DB.Model(&PredictBall{}).Order("id desc").Offset(int(pageSize * (pageNum - 1))).Limit(int(pageSize)).Find(&res).Error
 	if err != nil {
 		return nil, err
 	}
