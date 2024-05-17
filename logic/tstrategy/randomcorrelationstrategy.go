@@ -48,6 +48,9 @@ func (s *RandomCorrelationStrategy) Predict(ctx context.Context) ([]int64, error
 	if err != nil {
 		return nil, err
 	}
+	reds := balls[:len(model.RED_BALL_NUMS)]
+	blues := balls[:len(model.BLUE_BALL_NUMS)]
+
 	arr1 := make([]int64, 0)
 	arr2 := make([]int64, 0)
 	arr3 := make([]int64, 0)
@@ -57,13 +60,16 @@ func (s *RandomCorrelationStrategy) Predict(ctx context.Context) ([]int64, error
 	arr7 := make([]int64, 0)
 
 	predictArr := make([]int64, 7)
-	for _, ball := range balls {
+	for _, ball := range reds {
 		arr1 = append(arr1, ball.Num1)
 		arr2 = append(arr2, ball.Num2)
 		arr3 = append(arr3, ball.Num3)
 		arr4 = append(arr4, ball.Num4)
 		arr5 = append(arr5, ball.Num5)
 		arr6 = append(arr6, ball.Num6)
+	}
+
+	for _, ball := range blues {
 		arr7 = append(arr7, ball.Num7)
 	}
 
@@ -79,7 +85,7 @@ func (s *RandomCorrelationStrategy) Predict(ctx context.Context) ([]int64, error
 
 func (s *RandomCorrelationStrategy) ballDataNum() int64 {
 	// Todo: config in yaml
-	return 1000
+	return 100
 }
 
 func (s *RandomCorrelationStrategy) getBallData(ctx context.Context) ([]*model.Ball, error) {
