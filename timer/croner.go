@@ -26,7 +26,7 @@ type Croner struct {
 }
 
 func (c *Croner) Name() string {
-	return fmt.Sprintf("looper:%d", os.Getpid())
+	return fmt.Sprintf("croner:%d", os.Getpid())
 }
 
 func (c *Croner) Execute(ctx context.Context, task *model.Task) error {
