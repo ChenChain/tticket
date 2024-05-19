@@ -44,7 +44,6 @@ CREATE TABLE `predict_ball` (
                                 `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                 `deleted_time` timestamp NULL DEFAULT NULL,
                                 PRIMARY KEY (`id`),
-                                UNIQUE KEY `idx_drawing_time` (`lottery_drawing_time`),
                                 UNIQUE KEY `idx_predict_drawding_time` (`predict_lottery_drawing_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
