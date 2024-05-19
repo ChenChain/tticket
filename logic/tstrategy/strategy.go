@@ -109,5 +109,5 @@ func getPredictLotteryDrawingTime() string {
 		delta = 1
 	}
 	date = date.AddDate(0, 0, delta)
-	return fmt.Sprintf("%d-%d-%d", date.Year(), date.Month(), date.Day())
+	return fmt.Sprintf("%d-%02d-%02d", date.Year(), date.Month(), date.Day())
 }
