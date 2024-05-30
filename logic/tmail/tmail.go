@@ -56,6 +56,7 @@ func contentTemplate(predict *model.PredictBall, balls []*model.Ball, historyPre
 		if predictball, ok := predictBallMap[v.LotteryDrawingTime]; ok {
 			if predictball.IsWinning(v) {
 				v.LotteryDrawingTime = "<b> 中奖：" + v.LotteryDrawingTime + " </b>"
+				predictBallMap[v.LotteryDrawingTime] = predictball
 			}
 		} else {
 			// 防止下面空指针，塞一个异常值
