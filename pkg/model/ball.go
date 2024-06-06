@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"gorm.io/gorm/clause"
+	"sort"
 	"time"
 	"tticket/pkg/dal"
 	"tticket/pkg/log"
@@ -43,8 +44,13 @@ func (b *Ball) TableName() string {
 }
 
 func (b *Ball) GetBallNumsString() string {
+	tmp := []int64{b.Num1, b.Num2, b.Num3, b.Num4, b.Num5, b.Num6}
+	sort.Slice(tmp, func(i, j int) bool {
+		return tmp[i] < tmp[j]
+	})
+	tmp = append(tmp, b.Num7)
 	return fmt.Sprintf("%d %d %d %d %d %d %d",
-		b.Num1, b.Num2, b.Num3, b.Num4, b.Num5, b.Num6, b.Num7,
+		tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6],
 	)
 }
 
