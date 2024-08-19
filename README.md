@@ -12,6 +12,7 @@ TT系统会预测下一次双色球开奖号码，并将预测的结果通过ema
 2. 执行 cp ./tticket.toml /etc/tticket/tticket.toml并填写相关参数
     ```
    [mysql]
+    db_name = ""
     host = ""
     port = ""
     username = ""
@@ -24,6 +25,7 @@ TT系统会预测下一次双色球开奖号码，并将预测的结果通过ema
     username = ""
     password = ""
     host = "" # 邮件服务器host
+    from_user = "" # 邮件发送人
    ```
    
 3. 在mysql中执行./pkg/dal/db.sql命令，初始化表与db数据

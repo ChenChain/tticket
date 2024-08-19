@@ -2,10 +2,9 @@ package tstrategy
 
 import (
 	"context"
-	"fmt"
 	"go.uber.org/zap"
 	"math/rand"
-	"time"
+	"tticket/pkg/conf"
 	"tticket/pkg/log"
 	"tticket/pkg/model"
 )
@@ -32,76 +31,72 @@ func Init() {
 	Register(NewRandomNegativeStrategy())
 }
 
-func Select() Strategy {
-	total := int64(0)
-	arr := make([]int64, len(strategies))
-	strategyArr := make([]Strategy, len(strategies))
-	i := 0
-	for _, strategy := range strategies {
-		total += strategy.weight()
-		arr[i] = total
-		strategyArr[i] = strategy
-		i++
+func Select() []Strategy {
+	nums := conf.Config.Strategy.UserStrategyNum
+	if nums > len(strategies) {
+		nums = len(strategies)
 	}
-	score := rand.Int63n(total)
-	index := 0
-	for i, v := range arr {
-		if score < v {
-			index = i
-			break
+	res := make([]Strategy, 0)
+	tmp := map[string]Strategy{}
+	for k, v := range strategies {
+		tmp[k] = v
+	}
+
+	for k := 0; k < nums; k++ {
+		total := int64(0)
+		arr := make([]int64, len(tmp))
+		strategyArr := make([]Strategy, len(tmp))
+		i := 0
+		for _, strategy := range tmp {
+			total += strategy.weight()
+			arr[i] = total
+			strategyArr[i] = strategy
+			i++
 		}
+		score := rand.Int63n(total)
+		index := 0
+		for i, v := range arr {
+			if score < v {
+				index = i
+				break
+			}
+		}
+		res = append(res, strategyArr[index])
+		delete(tmp, strategyArr[index].Name())
 	}
-	return strategyArr[index]
+	return res
 }
 
 func PredictBall(ctx context.Context) error {
-	strategy := Select()
-	arr, err := strategy.Predict(ctx)
-	if err != nil {
-		log.Error(ctx, "failed to predict", zap.String("strategy", strategy.Name()), zap.Error(err))
-		return err
-	}
+	strategies := Select()
+	nextTime := model.GetPredictLotteryDrawingTime()
+	for index, strategy := range strategies {
+		arr, err := strategy.Predict(ctx)
+		if err != nil {
+			log.Error(ctx, "failed to predict", zap.String("strategy", strategy.Name()), zap.Error(err))
+			return err
+		}
 
-	ball := &model.PredictBall{
-		Ball: model.Ball{
-			Num1: arr[0],
-			Num2: arr[1],
-			Num3: arr[2],
-			Num4: arr[3],
-			Num5: arr[4],
-			Num6: arr[5],
-			Num7: arr[6],
-		},
-		// 当前日期的下一个周2， 4， 7
-		PredictLotteryDrawingTime: getPredictLotteryDrawingTime(),
-		Strategy:                  strategy.Name(),
-	}
-	for i := 0; i < 3; i++ {
-		if err = model.CreatePredictBall(ctx, ball); err == nil {
-			break
+		ball := &model.PredictBall{
+			Ball: model.Ball{
+				Num1: arr[0],
+				Num2: arr[1],
+				Num3: arr[2],
+				Num4: arr[3],
+				Num5: arr[4],
+				Num6: arr[5],
+				Num7: arr[6],
+			},
+			// 当前日期的下一个周2， 4， 7
+			PredictLotteryDrawingTime: nextTime,
+			Strategy:                  strategy.Name(),
+			OrderNum:                  index + 1,
+		}
+		for i := 0; i < 3; i++ {
+			if err = model.CreatePredictBall(ctx, ball); err == nil {
+				break
+			}
 		}
 	}
-	return err
-}
-
-func getPredictLotteryDrawingTime() string {
-	now := time.Now()
-	date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	weekday := now.Weekday()
-	delta := 0
-	switch weekday {
-	case time.Sunday:
-	case time.Monday:
-		delta = 1
-	case time.Tuesday:
-	case time.Wednesday:
-		delta = 1
-	case time.Thursday:
-	case time.Friday:
-		delta = 2
-	case time.Saturday:
-		delta = 1
-	}
-	date = date.AddDate(0, 0, delta)
-	return fmt.Sprintf("%d-%02d-%02d", date.Year(), date.Month(), date.Day())
+	return nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"tticket/logic/tstrategy"
 	"tticket/logic/tuser"
 	"tticket/pkg/conf"
@@ -20,6 +21,7 @@ func main() {
 	mail.Init(util.Context())
 	timer.Init(util.Context())
 	for {
+		time.Sleep(time.Second * 1)
 		// todo: ops api
 	}
 }

@@ -31,6 +31,7 @@ func Init(ctx context.Context) {
 	RegisterTask("predict_ball", tstrategy.PredictBall)
 	RegisterTask("spider_lottery", tspider.Logic)
 	RegisterTask("send_mail", tmail.Send)
+	RegisterTask("send_summary_mail", tmail.SendSummary)
 
 	go start(ctx)
 }

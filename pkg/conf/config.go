@@ -18,14 +18,15 @@ type Mail struct {
 	UserName string
 	Password string
 	Host     string
+	FromUser string `mapstructure:"from_user"`
 }
 
 type Spider struct {
 }
 
 type Mysql struct {
+	DbName      string `mapstructure:"db_name"`
 	Host        string
-	Host1       string
 	Port        string
 	UserName    string
 	Password    string
@@ -33,6 +34,7 @@ type Mysql struct {
 }
 
 type Strategy struct {
+	UserStrategyNum int
 }
 
 func Init() {
@@ -42,7 +44,12 @@ func Init() {
 	if err := viper.ReadInConfig(); err != nil {
 		panic(err)
 	}
+
 	if err := viper.Unmarshal(Config); err != nil {
 		panic(err)
+	}
+
+	if Config.Strategy.UserStrategyNum == 0 {
+		Config.Strategy.UserStrategyNum = 100
 	}
 }

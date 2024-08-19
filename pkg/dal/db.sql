@@ -1,4 +1,4 @@
-create database tticket;
+-- create database `db_name`;
 
 CREATE TABLE `user` (
                         `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -38,13 +38,14 @@ CREATE TABLE `predict_ball` (
                                 `num5` int DEFAULT NULL,
                                 `num6` int DEFAULT NULL,
                                 `num7` int DEFAULT NULL,
+                                `order_num` int DEFAULT NULL,
                                 `predict_lottery_drawing_time` varchar(255) DEFAULT NULL,
                                 `strategy` varchar(255) DEFAULT NULL,
                                 `created_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
                                 `updated_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                 `deleted_time` timestamp NULL DEFAULT NULL,
                                 PRIMARY KEY (`id`),
-                                UNIQUE KEY `idx_predict_drawding_time` (`predict_lottery_drawing_time`)
+                                UNIQUE KEY `idx_predict_drawding_time_strategy` (`predict_lottery_drawing_time`, `strategy`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -70,3 +71,4 @@ insert into task (`name`, `interval_second`, `type`, `cron`) values ('spider_lot
 insert into task (`name`, `interval_second`, `type`, `cron`) values ('predict_ball', 0, 3, '0 11 2,4,7');
 
 insert into task (`name`, `interval_second`, `type`, `cron`) values ('send_mail', 0, 3, '0 12 2,4,7');
+insert into task (`name`, `interval_second`, `type`, `cron`) values ('send_summary_mail', 0, 3, '0 12 5');

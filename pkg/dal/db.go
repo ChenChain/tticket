@@ -15,8 +15,9 @@ var DB *gorm.DB
 var err error
 
 func Init() {
-	dsn := "%s:%s@tcp(%s:%s)/tticket?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn = fmt.Sprintf(dsn, conf.Config.Mysql.UserName, conf.Config.Mysql.Password, conf.Config.Mysql.Host, conf.Config.Mysql.Port)
+	dsn := "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn = fmt.Sprintf(dsn, conf.Config.Mysql.UserName, conf.Config.Mysql.Password, conf.Config.Mysql.Host,
+		conf.Config.Mysql.Port, conf.Config.Mysql.DbName)
 
 	file, err := os.OpenFile("./db.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {

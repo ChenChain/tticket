@@ -49,7 +49,7 @@ func (b *Ball) GetBallNumsString() string {
 		return tmp[i] < tmp[j]
 	})
 	tmp = append(tmp, b.Num7)
-	return fmt.Sprintf("%d %d %d %d %d %d %d",
+	return fmt.Sprintf("%d  %d  %d  %d  %d  %d  %d",
 		tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], tmp[6],
 	)
 }

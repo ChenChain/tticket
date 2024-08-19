@@ -1,4 +1,5 @@
 [mysql]
+ db_name = ""
  host = ""
  port = ""
  username = ""
@@ -11,3 +12,4 @@
  username = ""
  password = ""
  host = ""
+ from_user = ""
