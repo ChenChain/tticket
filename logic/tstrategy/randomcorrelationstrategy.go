@@ -72,14 +72,15 @@ func (s *RandomCorrelationStrategy) Predict(ctx context.Context) ([]int64, error
 	for _, ball := range blues {
 		arr7 = append(arr7, ball.Num7)
 	}
+	predictFactor := predictFactor()
 
-	predictArr[0] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, arr1, predictArr)
-	predictArr[1] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr2), predictArr)
-	predictArr[2] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr3), predictArr)
-	predictArr[3] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr4), predictArr)
-	predictArr[4] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr5), predictArr)
-	predictArr[5] = predictCorrelationNumber(predictFactor(), model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr6), predictArr)
-	predictArr[6] = predictCorrelationNumber(predictFactor(), model.BLUE_BALL_TYPE, arr7, []int64{})
+	predictArr[0] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, arr1, predictArr)
+	predictArr[1] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr2), predictArr)
+	predictArr[2] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr3), predictArr)
+	predictArr[3] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr4), predictArr)
+	predictArr[4] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr5), predictArr)
+	predictArr[5] = predictCorrelationNumber(predictFactor, model.RED_BALL_TYPE, util.ArrayAdd(predictArr, arr6), predictArr)
+	predictArr[6] = predictCorrelationNumber(predictFactor, model.BLUE_BALL_TYPE, arr7, []int64{})
 	return predictArr, nil
 }
 
